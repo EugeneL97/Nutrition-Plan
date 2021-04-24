@@ -1,60 +1,57 @@
+import csv
 from flask import Flask, render_template, url_for, request, redirect
-from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime
+from io import StringIO
+from werkzeug.wrappers import Response
+from wtforms import Form, TextField, BooleanField, validators
+
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
-db = SQLAlchemy(app)
 
-class Todo(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    content = db.Column(db.String(200), nullable=False)
-    date_created = db.Column(db.DateTime, default=datetime.utcnow)
+# This is designed to take in the array of answers and process them into a .csv for machineLearningTesting.py to use to train and test the data
+# Need to declare responses as variables and find a proper way to constrain them (fixed responses through a dropdown?)
+#
 
-    def __repr__(self):
-        return '<Task %r>' % self.id
+answers = [(0, 18, 183, 160,
+            1, 2, 0)]
 
-@app.route('/', methods=['POST', 'GET'])
+@app.route('/')
 def index():
-    if request.method == 'POST':
-        task_content = request.form['content']
-        new_task = Todo(content=task_content)
+    return render_template('index.html')
 
-        try:
-            db.session.add(new_task)
-            db.session.commit()
-            return redirect('/')
-        except:
-            return 'wtf happened lol'
-    else:
-        tasks = Todo.query.order_by(Todo.date_created).all()
-        return render_template('index.html', tasks=tasks)
 
-@app.route('/delete/<int:id>')
-def delete(id):
-    task_to_delete = Todo.query.get_or_404(id)
+@app.route('/answers', methods=['POST', 'GET'])
+def getAnswers():
+    def generate():
+        data = StringIO()
+        writer = csv.writer(data)
 
-    try:
-        db.session.delete(task_to_delete)
-        db.session.commit()
-        return redirect('/')
-    except:
-        return 'wtf happened when u tried deleting lol'
+        # write header
+        writer.writerow(('sex', 'age', 'height', 'weight', 'activityLevel',
+                        'meals', 'snacks'))
+        yield data.getvalue()
+        data.seek(0)
+        data.truncate(0)
 
-@app.route('/update/<int:id>', methods=['GET', 'POST'])
-def update(id):
-    task = Todo.query.get_or_404(id)
+        # write each log item
+        for item in answers:
+            writer.writerow((
+                item[0], item[1], item[2], item[3],
+                item[4], item[5], item[6],
+            ))
+            yield data.getvalue()
+            data.seek(0)
+            data.truncate(0)
 
-    if request.method == 'POST':
-        task.content = request.form['content']
+    text = request.form['age']
+    processed_text = text.upper()
+    print(processed_text)
+    # stream the response as the data is generated
+    response = Response(generate(), mimetype='text/csv')
+    # add a filename
+    response.headers.set("Content-Disposition",
+                         "attachment", filename="answers.csv")
+    return response
 
-        try:
-            db.session.commit()
-            return redirect('/')
-        except:
-            return 'wtf happened when u tried updating lol'
-    else:
-        return render_template('update.html', task=task)
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -7,70 +7,79 @@
 {% block body %}
 <div class="content">
     <h1>Eugene's Nutrition Plan</h1>
-    <form action="/" method="POST">
+    <form action="/answers" method="POST">
         <h2>Basic Questions</h2>
-        
-        <br><label for="age"> What is your sex? </label>
-            <br><input type = "radio" name = "sex" id = "male" value = "male" checked>
-                <label for="male">Male</label>
-            <br><input type = "radio" name = "sex" id = "female" value = "female">
-                <label for="male">Female</label>
 
-        <br><br><label for="age"> What is your age? </label> <!-- Age check in python since age affects the algorithm -->
-        <input type = "number" name = "age" id = "age">
-        
-        <br><br><label for="height"> What is your height? Feet Inches </label> <!-- Height check again, dropdown or input boxes? -->
-        <input type = "text" name = "height" id = "height">
-        
+        <br><label for="sex"> What is your sex? </label>
+        <br><input type="radio" name="sex" id="male" value="male" checked>
+        <label for="male">Male</label>
+        <br><input type="radio" name="sex" id="female" value="female">
+        <label for="female">Female</label>
+
+        <br><br><label for="age"> What is your age? </label>
+        <!-- Age check in python since age affects the algorithm -->
+        <input type="number" name="age" id="age">
+
+        <br><br><label for="height"> What is your height? Feet Inches </label>
+        <!-- Height check again, dropdown or input boxes? -->
+        <input type="text" name="height" id="height">
+
         <br><br><label for="weight"> What is your weight? </label>
-        <input type = "number" name = "weight" id = "weight">
+        <input type="number" name="weight" id="weight">
 
-        <br><br><label for="activity"> What is your activity level? </label> <!-- Four dropdown options similar to MyFitnessPal -->
-        <input type = "text" name = "activity" id = "activity">
+        <br><br><label for="activity"> What is your activity level? </label>
+        <!-- Four dropdown options similar to MyFitnessPal -->
+        <input type="text" name="activity" id="activity">
 
         <br><br><label for="meals"> How many meals do you want to eat daily? </label>
-        <input type = "number" name = "meals" id = "meals" placeholder="e.g. 1-7">
+        <input type="number" name="meals" id="meals" placeholder="e.g. 1-7">
 
         <br><br><label for="snacks"> How many snacks do you want to eat daily? </label>
-        <input type = "number" name = "snacks" id = "snacks" placeholder="e.g. 0-2">
+        <input type="number" name="snacks" id="snacks" placeholder="e.g. 0-2">
         <!-- Define meals and snacks as a certain percentage (meals > snacks in terms of percentage) of daily calories
             For ex. Meals are on average 20% calories for one meal while snacks are 5-10% of calories for one snack -->
-        
-        <br><br><label for="allergies"> What foods are you allergic to?</label>     <!-- https://www.fda.gov/food/food-labeling-nutrition/food-allergies  -->
-        <br><input type = "checkbox" name ="allergies" id = "milk" value = "milk">  <!-- Label foods with an allergy flag, if true, what allergy are they tied to? -->
-            <label for="milk">Milk</label>                                          <!-- If no option is selected, anyway to default an allergy variable to none? -->
 
-            <br><input type = "checkbox" name ="allergies" id = "eggs" value = "eggs">
-                <label for="eggs">Eggs</label>
+        <!-- <br><br><label for="allergies"> What foods are you allergic to?</label>
+        https://www.fda.gov/food/food-labeling-nutrition/food-allergies  
+        <br><input type="checkbox" name="allergies" id="milk" value="milk">
+        < Label foods with an allergy flag, if true, what allergy are they tied to? 
+        <label for="milk">Milk</label>  If no option is selected, anyway to default an allergy variable to none? 
 
-            <br><input type = "checkbox" name ="allergies" id = "fish" value = "fish">
-                <label for="fish">Fish</label>
+        <br><input type="checkbox" name="allergies" id="eggs" value="eggs">
+        <label for="eggs">Eggs</label>
 
-            <br><input type = "checkbox" name ="allergies" id = "shellfish" value = "shellfish">
-                <label for="shellfish">Shellfish</label>
+        <br><input type="checkbox" name="allergies" id="fish" value="fish">
+        <label for="fish">Fish</label>
 
-            <br><input type = "checkbox" name ="allergies" id = "treeNuts" value = "treeNuts">
-                <label for="treeNuts">Tree nuts</label>
+        <br><input type="checkbox" name="allergies" id="shellfish" value="shellfish">
+        <label for="shellfish">Shellfish</label>
 
-            <br><input type = "checkbox" name ="allergies" id = "peanuts" value = "peanuts">
-                <label for="peanuts">Peanuts</label>
+        <br><input type="checkbox" name="allergies" id="treeNuts" value="treeNuts">
+        <label for="treeNuts">Tree nuts</label>
 
-            <br><input type = "checkbox" name ="allergies" id = "wheat" value = "wheat">
-                <label for="wheat">Wheat</label>
+        <br><input type="checkbox" name="allergies" id="peanuts" value="peanuts">
+        <label for="peanuts">Peanuts</label>
 
-            <br><input type = "checkbox" name ="allergies" id = "soybeans" value = "soybeans">
-                <label for="soybeans">Soybeans</label> <!-- An "other" variable would likely help identify any other possible allergens in a future build -->
+        <br><input type="checkbox" name="allergies" id="wheat" value="wheat">
+        <label for="wheat">Wheat</label>
+
+        <br><input type="checkbox" name="allergies" id="soybeans" value="soybeans">
+        <label for="soybeans">Soybeans</label>
+         An "other" variable would likely help identify any other possible allergens in a future build 
 
         <br><br><label for="foodIntolerances"> What foods can you not tolerate well? </label>
-        <br><input type = "checkbox" name ="foodIntolerances" id = "dairy" value = "dairy">
-            <label for="dairy">Dairy</label> <!-- More to be added but this is a lower priority in the grand scheme. -->
-            <!-- to be continued... -->
+        <br><input type="checkbox" name="foodIntolerances" id="dairy" value="dairy">
+        <label for="dairy">Dairy</label> More to be added but this is a lower priority in the grand scheme. -->
+        <!-- to be continued... -->
 
-        <br><br><label for="foodPreferences"> What foods do you prefer eating more than others? (Separate foods with commas) </label>
-        <br><input type = "text" name = "foodPreferences" id = "foodPreferences" placeholder ="Potatoes, oatmeal, beef, etc...">
-        <!-- The idea is to use a comma as a delimiter and foods here take a higher priority into being put into the meal plan. This could be tweaked to be smarter, instead of requiring comma separation (user error) -->    
+        <!-- <br><br><label for="foodPreferences"> What foods do you prefer eating more than others? (Separate foods with
+            commas) </label>
+        <br><input type="text" name="foodPreferences" id="foodPreferences"
+            placeholder="Potatoes, oatmeal, beef, etc..."> -->
+        <!-- The idea is to use a comma as a delimiter and foods here take a higher priority into being put into the meal plan. This could be tweaked to be smarter, instead of requiring comma separation (user error) -->
 
         <!-- Experimenting with diet preference, diet strictness, whether it's worth it moving forward -->
+        <br><br><input type="submit" value="Submit">
     </form>
 </div>
 {% endblock %}
