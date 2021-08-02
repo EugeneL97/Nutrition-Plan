@@ -1,3 +1,5 @@
+from enum import unique
+from os import EX_TEMPFAIL
 from nutritionPlan import db
 
 class AnswersDB(db.Model):
@@ -9,3 +11,11 @@ class AnswersDB(db.Model):
     activity = db.Column(db.SmallInteger, default=0, nullable=False)
     meals = db.Column(db.SmallInteger, default=1,nullable=False)
     snacks = db.Column(db.SmallInteger, default=0, nullable=False)
+
+class userInfo(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(254), unique=True, nullable=False)
+    username = db.Column(db.String(100), unique=True, nullable=False)
+    password = db.Column(db.String(200), nullable=False)
+    passwordSalt = db.Column(db.String(50), nullable=True)
+    passwordHashAlgo = db.Column(db.String(50))

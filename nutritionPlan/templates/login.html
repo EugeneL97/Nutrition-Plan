@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Login Page
+{% endblock %}
+
+{% block content %}
+<div class = "content">
+    <h1>Login Page</h1>
+    <!-- Send this to index.html after logged in. -->
+    <form action ="{{url_for("checkLogin")}}" method="POST">
+        <br><label for="username"> Username: </label>
+        <input type="text" name="username" id="username">
+
+        <br><label for="password"> Password: </label>
+        <input type ="password" name="password" id="password">
+    </form>
+
+    <br><a href="/createAccount"> Create an account</a>
+    <br><a href="/forgotPassword"> Forgot your password?</a>
+</div>
+{% endblock %}

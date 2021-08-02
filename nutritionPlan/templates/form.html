@@ -1,35 +1,33 @@
 {% extends 'base.html' %}
 
-{% block head %}
-<title>Nutrition Plan</title>
+{% block title %}
+    Nutrition Plan
 {% endblock %}
 
-{% block body %}
+{% block content %}
 <div class="content">
     <h1>Eugene's Nutrition Plan</h1>
-    <form action="{{url_for("getAnswers")}}" method="POST">
+    <!-- Need WTForms to validate the inputs later (low prio) -->
+    <form action="{{url_for("formPage")}}" method="POST">
         <h2>Basic Questions</h2>
 
         <br><label for="sex"> What is your sex? </label>
-        <br><input type="radio" name="sex" id="0" value="0" checked>
+        <br><input type="radio" name="sex" id="0" value="M" checked>
         <label for="0">Male</label>
-        <br><input type="radio" name="sex" id="1" value="1">
+        <br><input type="radio" name="sex" id="1" value="F">
         <label for="1">Female</label>
 
         <br><br><label for="age"> What is your age? </label>
-        <!-- Age check in python since age affects the algorithm -->
         <input type="number" name="age" id="age">
 
         <br><br><label for="height"> What is your height? </label>
-        <!-- Height check again, dropdown or input boxes? -->
         <input type="text" name="height" id="height">
 
         <br><br><label for="weight"> What is your weight? </label>
         <input type="number" name="weight" id="weight">
 
         <br><br><label for="activity"> What is your activity level? </label>
-        <!-- Four dropdown options similar to MyFitnessPal -->
-        <input type="text" name="activity" id="activity">
+        <input type="number" name="activity" id="activity">
 
         <br><br><label for="meals"> How many meals do you want to eat daily? </label>
         <input type="number" name="meals" id="meals" placeholder="e.g. 1-7">
