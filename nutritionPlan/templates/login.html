@@ -5,18 +5,32 @@
 {% endblock %}
 
 {% block content %}
-<div class = "content">
-    <h1>Login Page</h1>
-    <!-- Send this to index.html after logged in. -->
-    <form action ="{{url_for("checkLogin")}}" method="POST">
-        <br><label for="username"> Username: </label>
-        <input type="text" name="username" id="username">
+<body class="text-center">
+    <div class="container">
+        <form method="POST" class="form-signin" style="color:white">
+            {{ form.hidden_tag() }}
+            <img class="mb-4" src="" alt="">
+            <h1 class="h3 mb-3 font-weight-normal">
+                Please Login
+            </h1>
+            <br>
+            {{ form.username.label() }}
+            {{ form.username(class="form-control", placeholder="User Name") }}
 
-        <br><label for="password"> Password: </label>
-        <input type ="password" name="password" id="password">
-    </form>
+            {{ form.password.label() }}
+            {{ form.password(class="form-control", placeholder="Password") }}
 
-    <br><a href="/createAccount"> Create an account</a>
-    <br><a href="/forgotPassword"> Forgot your password?</a>
-</div>
+            <br>
+
+
+            <div class="checkbox mb-3">
+                <h6>Create an account</h6>
+                <a class="btn btn-sm btn-secondary" href="{{ url_for('createAccount') }}">Register</a>
+            </div>
+
+            {{ form.submit(class="btn btn-lg btn-block btn-primary") }}
+
+        </form>
+    </div>
+</body>
 {% endblock %}
