@@ -1,6 +1,6 @@
 from nutritionPlan import app
-from nutritionPlan.models import AnswersDB, userInfo, db
-from nutritionPlan.forms import createAccForm, loginForm
+from nutritionPlan.models import Answers, userInfo, db
+from nutritionPlan.forms import RegisterForm, LoginForm
 from flask import render_template, request, redirect, url_for, flash
 from flask_login import login_user, logout_user, login_required
 
@@ -11,26 +11,28 @@ def homePage():
 
 @app.route('/createAccount', methods=['POST', 'GET'])
 def createAccount():
-    form = createAccForm()
+    form = RegisterForm()
     if form.validate_on_submit():
         userToCreate = userInfo(username=form.username.data,
                             emailAddress=form.emailAddress.data,
-                            passwordHashAlgo=form.password1.data)
+                            password=form.password1.data)
         db.session.add(userToCreate)
         db.session.commit()
+            
 
         flash('User created successfully!', category='success')
         return redirect(url_for('homePage'))
-    if form.error != {}:
+    if form.errors != {}:
         for errorMsg in form.errors.values():
             flash(f'Error with creating an account: {errorMsg}', category='danger')
+
     return render_template('createAccount.html', form=form)
 
 #Login -> form
 #Need to login in order to access the form
 @app.route('/login', methods=['POST', 'GET'])
 def checkLogin():
-    form = loginForm()
+    form = LoginForm()
     if form.validate_on_submit():
         attemptedUser = userInfo.query.filter_by(username=form.username.data).first()
         if attemptedUser and attemptedUser.check_password_correction(
@@ -56,7 +58,7 @@ def logoutUser():
 def formPage():
     if request.method == "POST":
 
-        answers = AnswersDB(sex=request.form['sex'], age=request.form['age'], 
+        answers = Answers(sex=request.form['sex'], age=request.form['age'], 
                             heightInCm=request.form['height'], weightInKg=request.form['weight'],
                             activity=request.form['activity'], meals=request.form['meals'], snacks=request.form['snacks'])
 
