@@ -9,6 +9,7 @@ app.config['MONGO_URI'] = 'mongodb://localhost:27017:nutritionPlan'
 app.config['SECRET_KEY'] = '2d700b21121a0917e03ae0ed'
 mongo = MongoClient(app.config['MONGO_URI'])
 bcrypt = Bcrypt(app)
+
 login_manager = LoginManager(app)
 login_manager.login_view = 'checkLogin'
 login_manager.login_message_category = "info"

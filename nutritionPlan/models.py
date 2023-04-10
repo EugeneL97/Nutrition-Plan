@@ -2,7 +2,6 @@ from nutritionPlan import mongo, bcrypt, login_manager
 from flask_login import UserMixin
 from pymongo import MongoClient
 
-mongo = MongoClient('mongodb://localhost:27017/')
 db = mongo.NutritionPlan
 
 @login_manager.user_loader
