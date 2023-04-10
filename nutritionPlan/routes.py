@@ -1,4 +1,4 @@
-from nutritionPlan import app
+from nutritionPlan import app, mongo
 from nutritionPlan.models import Answers, userInfo, db
 from nutritionPlan.forms import RegisterForm, LoginForm
 from flask import render_template, request, redirect, url_for, flash
@@ -13,13 +13,13 @@ def homePage():
 def createAccount():
     form = RegisterForm()
     if form.validate_on_submit():
-        userToCreate = userInfo(username=form.username.data,
-                            emailAddress=form.emailAddress.data,
-                            password=form.password1.data)
-        db.session.add(userToCreate)
-        db.session.commit()
-            
+        userToCreate = {
+            "username": form.username.data,
+            "emailAddress": form.emailAddress.data,
+            "password": bcrypt.generate_password_hash(form.password1.data).decode('utf-8')
+        }    
 
+        mongo.db.users.insert_one(userToCreate)
         flash('User created successfully!', category='success')
         return redirect(url_for('homePage'))
     if form.errors != {}:
@@ -34,10 +34,8 @@ def createAccount():
 def checkLogin():
     form = LoginForm()
     if form.validate_on_submit():
-        attemptedUser = userInfo.query.filter_by(username=form.username.data).first()
-        if attemptedUser and attemptedUser.check_password_correction(
-            attemptedPassword=form.password.data
-        ):
+        attemptedUser = mongo.db.users.find_one({"username": form.username.data})
+        if attemptedUser and bcrypt.check_password_hash(attemptedUser["password"], form.password.data):
             login_user(attemptedUser)
             flash('Login successful!', category='success')
             return redirect(url_for('homePage'))
@@ -57,21 +55,29 @@ def logoutUser():
 @login_required
 def formPage():
     if request.method == "POST":
-
-        answers = Answers(sex=request.form['sex'], age=request.form['age'], 
-                            heightInCm=request.form['height'], weightInKg=request.form['weight'],
-                            activity=request.form['activity'], meals=request.form['meals'], snacks=request.form['snacks'])
-
+        answers = {
+            "user_id": current_user["_id"],
+            "sex": request.form['sex'],
+            "age": request.form['age'],
+            "heightInCm": request.form['height'],
+            "weightInKg": request.form['weight'],
+            "activity": request.form['activity'],
+            "meals": request.form['meals'],
+            "snacks": request.form['snacks']
+        }
         try:
-            db.session.add(answers)
-            db.session.commit()
+            mongo.db.answers.insert_one(answers)
             return render_template("answers.html")
         except:
-            return 'how did this happen lol'
-
+            return "You broke my code. I hope you're happy."
     else:
         return render_template("form.html")
-
+    
+@app.route('/answers')
+@login_required
+def answers():
+    user_answers = mongo.db.answers.find_one({"user_id": current_user["_id"]})
+    return render_template('answers.html', user_answers=user_answers)
 #Need a route (login page start of website)
 #Need username/email to login (how they reference their submission in the database)
     #If new user, fill out the nutrition plan
