@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import Length, EqualTo, Email, DataRequired, ValidationError
-from nutritionPlan.models import userInfo
+from nutritionPlan import mongo
 
 class RegisterForm(FlaskForm):
     
@@ -9,12 +9,12 @@ class RegisterForm(FlaskForm):
     #in this case username exists below so this naming convention is crucial for this to work
 
     def validate_username(self, usernameToCheck):
-        user = userInfo.query.filter_by(username=usernameToCheck.data).first()
+        user = mongo.db.users.find_one({'username': usernameToCheck.data})
         if user:
             raise ValidationError('That username is already taken!')
     
     def validate_emailAddress(self, emailAddressToCheck):
-        email = userInfo.query.filter_by(emailAddress=emailAddressToCheck.data).first()
+        email = mongo.db.users.find_one({'emailAddress': emailAddressToCheck.data})
         if email:
             raise ValidationError('An account with that email already exists!')
 
