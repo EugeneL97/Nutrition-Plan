@@ -1,4 +1,5 @@
-# Nutrition-Plan
-The idea of a Nutrition Plan that auto generates based on your preferences is something I've been interested for in a long time. My background of bodybuilding helped familiarize me with the dieting process. I was tired of just eating chicken, broccoli, rice every day with no flair to it. A diet should be something tailored to every person's needs as that'll help their adherence to it which is the most vital thing for weight loss. If your diet is not sustainable for you, you will lack the results you want.
+# Nutrition Plan
 
-The goal with this project is to be a challenging solo project that aids in my ability to learn Software Engineering concepts and expand my coding knowledge, while reinforcing my knowledge in nutrition and kinesiology. These diets will range for those looking for general health to athletes looking to maximize all factors for their respective sport.
+The Nutrition Plan is an innovative web application that automates meal planning based on individual preferences. As a fitness enthusiast and bodybuilder, I recognized the need for personalized nutrition plans that go beyond the typical chicken, broccoli, and rice meals. A tailored diet is crucial for adherence and ultimately, weight loss success.
+
+My goal with this project is to challenge myself as a solo developer and further develop my skills in software engineering, while applying my knowledge in nutrition and kinesiology. The Nutrition Plan offers a wide range of diet plans, catering to individuals seeking general health to athletes looking to optimize their performance in their respective sports.
