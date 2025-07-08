@@ -1,4 +1,4 @@
-const { GoogleGenerativeAI } = require('@google/generative-ai');
+import { GoogleGenerativeAI } from '@google/generative-ai';
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || 'demo-key');
 
@@ -79,31 +79,33 @@ const LIFESTYLES = {
 };
 
 class NutritionAI {
+  private model: any;
+
   constructor() {
     this.model = genAI.getGenerativeModel({ model: 'gemini-pro' });
   }
 
-  async generateMealPlan(lifestyle, goals, restrictions, days = 7) {
+  async generateMealPlan(lifestyle, goals, restrictions) {
     try {
       const lifestyleConfig = LIFESTYLES[lifestyle];
       if (!lifestyleConfig) {
         throw new Error('Invalid lifestyle type');
       }
 
-      const prompt = this.buildLifestyleSpecificPrompt(lifestyleConfig, goals, restrictions, days);
+      const prompt = this.buildLifestyleSpecificPrompt(lifestyleConfig, goals, restrictions);
       const result = await this.model.generateContent(prompt);
       const response = await result.response;
       const text = response.text();
       
-      return this.parseMealPlanResponse(text, lifestyleConfig, goals, days);
+      return this.parseMealPlanResponse(text, lifestyleConfig, goals);
     } catch (error) {
       console.error('Error generating meal plan:', error);
-      return this.generateDemoMealPlan(lifestyle, goals, days);
+      return this.generateDemoMealPlan(lifestyle, goals);
     }
   }
 
-  buildLifestyleSpecificPrompt(lifestyleConfig, goals, restrictions, days) {
-    return `Create a ${days}-day nutrition plan for a ${lifestyleConfig.name.toLowerCase()}.
+  buildLifestyleSpecificPrompt(lifestyleConfig, goals, restrictions) {
+    return `Create a single day nutrition plan for a ${lifestyleConfig.name.toLowerCase()}.
 
 Lifestyle Characteristics:
 ${lifestyleConfig.characteristics.map(char => `- ${char}`).join('\n')}
@@ -125,34 +127,34 @@ Generate a meal plan that:
 4. Offers practical meal options
 5. Considers the user's specific goals and restrictions
 
-Format as a structured meal plan with daily breakdowns.`;
+Format as a structured meal plan for a single day.`;
   }
 
-  parseMealPlanResponse(text, lifestyleConfig, goals, days) {
+  parseMealPlanResponse(text, lifestyleConfig, goals) {
     // For now, return demo data - in production, parse AI response
-    return this.generateDemoMealPlan(lifestyleConfig.name.toLowerCase(), goals, days);
+    return this.generateDemoMealPlan(lifestyleConfig.name.toLowerCase(), goals);
   }
 
-  generateDemoMealPlan(lifestyle, goals, days) {
+  generateDemoMealPlan(lifestyle, goals) {
     const lifestyleConfig = LIFESTYLES[lifestyle] || LIFESTYLES.average_joe;
     
-    const dailyMeals = [];
-    for (let i = 1; i <= days; i++) {
-      const day = `Day ${i}`;
-      const meals = this.generateLifestyleSpecificMeals(lifestyleConfig, i);
-      dailyMeals.push({ day, meals });
-    }
+    // Generate a single day of meals
+    const meals = this.generateLifestyleSpecificMeals(lifestyleConfig, 1);
+    const dailyMeals = [{ day: 'Daily Meals', meals }];
+
+    // Format goal name properly
+    const goalName = goals.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
 
     return {
       id: `plan-${Date.now()}`,
-      name: `${lifestyleConfig.name} ${goals} Plan`,
-      description: `A ${days}-day nutrition plan optimized for ${lifestyleConfig.name.toLowerCase()} lifestyle`,
+      name: `${goalName} Plan`,
+      description: `A nutrition plan optimized for ${goalName.toLowerCase()}`,
       lifestyle: lifestyle,
       dailyMeals,
-      totalCalories: this.calculateTotalCalories(lifestyleConfig, days),
-      totalProtein: this.calculateTotalProtein(lifestyleConfig, days),
-      totalCarbs: this.calculateTotalCarbs(lifestyleConfig, days),
-      totalFat: this.calculateTotalFat(lifestyleConfig, days),
+      totalCalories: this.calculateTotalCalories(lifestyleConfig, 1),
+      totalProtein: this.calculateTotalProtein(lifestyleConfig, 1),
+      totalCarbs: this.calculateTotalCarbs(lifestyleConfig, 1),
+      totalFat: this.calculateTotalFat(lifestyleConfig, 1),
       created_at: new Date().toISOString()
     };
   }
@@ -212,22 +214,22 @@ Format as a structured meal plan with daily breakdowns.`;
 
   calculateTotalCalories(lifestyleConfig, days) {
     const baseCalories = lifestyleConfig.nutritionFocus.protein === 'high' ? 2200 : 2000;
-    return baseCalories * days;
+    return baseCalories;
   }
 
   calculateTotalProtein(lifestyleConfig, days) {
     const baseProtein = lifestyleConfig.nutritionFocus.protein === 'high' ? 180 : 120;
-    return baseProtein * days;
+    return baseProtein;
   }
 
   calculateTotalCarbs(lifestyleConfig, days) {
     const baseCarbs = 200; // Moderate baseline
-    return baseCarbs * days;
+    return baseCarbs;
   }
 
   calculateTotalFat(lifestyleConfig, days) {
     const baseFat = 65; // Moderate baseline
-    return baseFat * days;
+    return baseFat;
   }
 
   getLifestyles() {
@@ -235,4 +237,4 @@ Format as a structured meal plan with daily breakdowns.`;
   }
 }
 
-module.exports = new NutritionAI(); 
+export default new NutritionAI(); 

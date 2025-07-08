@@ -1,6 +1,6 @@
-const express = require('express');
-const cors = require('cors');
-const dotenv = require('dotenv');
+import express from 'express';
+import cors from 'cors';
+import dotenv from 'dotenv';
 
 // Load environment variables
 dotenv.config();
@@ -13,7 +13,7 @@ app.use(cors());
 app.use(express.json());
 
 // Import routes
-const nutritionRoutes = require('./routes/nutrition');
+import nutritionRoutes from './routes/nutrition';
 
 // Routes
 app.use('/api/nutrition', nutritionRoutes);
