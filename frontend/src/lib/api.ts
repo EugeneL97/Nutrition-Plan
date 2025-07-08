@@ -16,7 +16,7 @@ export interface Lifestyle {
 }
 
 export interface NutritionGoals {
-  goal: 'weight_loss' | 'muscle_gain' | 'maintenance' | 'energy_boost';
+  goal: 'weight_loss' | 'muscle_gain' | 'maintenance';
   dietaryRestrictions: string[];
   calorieTarget: number;
   proteinTarget: number;
@@ -85,8 +85,7 @@ class ApiClient {
   async generateMealPlan(
     lifestyle: string,
     goals: string,
-    restrictions: string[] = [],
-    days: number = 7
+    restrictions: string[] = []
   ): Promise<{ success: boolean; data: MealPlan }> {
     return this.request('/nutrition/generate-plan', {
       method: 'POST',
@@ -94,13 +93,12 @@ class ApiClient {
         lifestyle,
         goals,
         restrictions,
-        days,
       }),
     });
   }
 
-  async getDemoPlan(lifestyle: string, days: number = 7): Promise<{ success: boolean; data: MealPlan }> {
-    return this.request(`/nutrition/demo-plan/${lifestyle}?days=${days}`);
+  async getDemoPlan(lifestyle: string): Promise<{ success: boolean; data: MealPlan }> {
+    return this.request(`/nutrition/demo-plan/${lifestyle}`);
   }
 }
 

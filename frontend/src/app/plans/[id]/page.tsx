@@ -106,37 +106,37 @@ export default function PlanDetailPage() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="text-center">
               <div className="text-2xl font-bold text-indigo-600">
-                {Math.round(plan.totalCalories / plan.dailyMeals.length)}
+                {plan.totalCalories}
               </div>
-              <div className="text-sm text-gray-500">Calories/Day</div>
+              <div className="text-sm text-gray-500">Calories</div>
             </div>
             <div className="text-center">
               <div className="text-2xl font-bold text-green-600">
-                {Math.round(plan.totalProtein / plan.dailyMeals.length)}g
+                {plan.totalProtein}g
               </div>
-              <div className="text-sm text-gray-500">Protein/Day</div>
+              <div className="text-sm text-gray-500">Protein</div>
             </div>
             <div className="text-center">
               <div className="text-2xl font-bold text-yellow-600">
-                {Math.round(plan.totalCarbs / plan.dailyMeals.length)}g
+                {plan.totalCarbs}g
               </div>
-              <div className="text-sm text-gray-500">Carbs/Day</div>
+              <div className="text-sm text-gray-500">Carbs</div>
             </div>
             <div className="text-center">
               <div className="text-2xl font-bold text-red-600">
-                {Math.round(plan.totalFat / plan.dailyMeals.length)}g
+                {plan.totalFat}g
               </div>
-              <div className="text-sm text-gray-500">Fat/Day</div>
+              <div className="text-sm text-gray-500">Fat</div>
             </div>
           </div>
         </div>
 
-        {/* Daily Meals */}
+        {/* Meals */}
         <div className="space-y-8">
           {plan.dailyMeals.map((dailyMeal) => (
             <div key={dailyMeal.day} className="bg-white rounded-lg shadow">
               <div className="px-6 py-4 border-b border-gray-200">
-                <h3 className="text-lg font-semibold text-gray-900">{dailyMeal.day}</h3>
+                <h3 className="text-lg font-semibold text-gray-900">Meals</h3>
               </div>
               <div className="p-6">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

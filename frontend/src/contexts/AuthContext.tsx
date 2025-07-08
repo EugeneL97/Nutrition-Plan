@@ -30,13 +30,39 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, [])
 
+  // Basic validation functions
+  const validateEmail = (email: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    return emailRegex.test(email)
+  }
+
+  const validatePassword = (password: string): boolean => {
+    return password.length >= 6
+  }
+
   const signIn = async (email: string, password: string) => {
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 1000))
     
-    // For demo purposes, accept any email/password
+    // Validate email and password
+    if (!validateEmail(email)) {
+      throw new Error('Please enter a valid email address')
+    }
+    
+    if (!validatePassword(password)) {
+      throw new Error('Password must be at least 6 characters long')
+    }
+    
+    // Check if user exists in localStorage
+    const storedUsers = JSON.parse(localStorage.getItem('nutrition-app-users') || '[]')
+    const existingUser = storedUsers.find((u: any) => u.email === email && u.password === password)
+    
+    if (!existingUser) {
+      throw new Error('Invalid email or password')
+    }
+    
     const demoUser: LocalUser = {
-      id: 'demo-user-id',
+      id: existingUser.id,
       email: email
     }
     
@@ -48,9 +74,35 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 1000))
     
-    // For demo purposes, create user immediately
+    // Validate email and password
+    if (!validateEmail(email)) {
+      throw new Error('Please enter a valid email address')
+    }
+    
+    if (!validatePassword(password)) {
+      throw new Error('Password must be at least 6 characters long')
+    }
+    
+    // Check if user already exists
+    const storedUsers = JSON.parse(localStorage.getItem('nutrition-app-users') || '[]')
+    const existingUser = storedUsers.find((u: any) => u.email === email)
+    
+    if (existingUser) {
+      throw new Error('An account with this email already exists')
+    }
+    
+    // Create new user
+    const newUser = {
+      id: `user-${Date.now()}`,
+      email: email,
+      password: password
+    }
+    
+    storedUsers.push(newUser)
+    localStorage.setItem('nutrition-app-users', JSON.stringify(storedUsers))
+    
     const demoUser: LocalUser = {
-      id: 'demo-user-id',
+      id: newUser.id,
       email: email
     }
     

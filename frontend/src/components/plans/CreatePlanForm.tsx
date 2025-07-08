@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { apiClient, demoLifestyles, type Lifestyle } from '@/lib/api'
 import { useRouter } from 'next/navigation'
 
@@ -20,8 +20,7 @@ export default function CreatePlanForm({ onPlanCreated }: CreatePlanFormProps) {
     calorieTarget: 2000,
     proteinTarget: 150,
     carbTarget: 200,
-    fatTarget: 65,
-    days: 7
+    fatTarget: 65
   })
 
   const [restrictionInput, setRestrictionInput] = useState('')
@@ -29,8 +28,7 @@ export default function CreatePlanForm({ onPlanCreated }: CreatePlanFormProps) {
   const goals = [
     { value: 'weight_loss', label: 'Weight Loss', icon: '⚖' },
     { value: 'muscle_gain', label: 'Muscle Gain', icon: '💪' },
-    { value: 'maintenance', label: 'Maintenance', icon: '🔄' },
-    { value: 'energy_boost', label: 'Energy Boost', icon: '⚡' }
+    { value: 'maintenance', label: 'Maintenance', icon: '🔄' }
   ]
 
   const lifestyles = Object.entries(demoLifestyles).map(([key, lifestyle]) => ({
@@ -42,6 +40,47 @@ export default function CreatePlanForm({ onPlanCreated }: CreatePlanFormProps) {
     'Vegetarian', 'Vegan', 'Gluten-Free', 'Dairy-Free', 
     'Nut-Free', 'Low-Carb', 'Keto', 'Paleo'
   ]
+
+  // Calculate macros based on calories and goal
+  const calculateMacros = (calories: number, goal: string) => {
+    let proteinRatio, carbRatio, fatRatio
+    
+    switch (goal) {
+      case 'muscle_gain':
+        proteinRatio = 0.3 // 30% protein
+        carbRatio = 0.45   // 45% carbs
+        fatRatio = 0.25    // 25% fat
+        break
+      case 'weight_loss':
+        proteinRatio = 0.35 // 35% protein
+        carbRatio = 0.35   // 35% carbs
+        fatRatio = 0.30    // 30% fat
+        break
+      case 'maintenance':
+      default:
+        proteinRatio = 0.25 // 25% protein
+        carbRatio = 0.50   // 50% carbs
+        fatRatio = 0.25    // 25% fat
+        break
+    }
+    
+    const protein = Math.round((calories * proteinRatio) / 4) // 4 calories per gram
+    const carbs = Math.round((calories * carbRatio) / 4)      // 4 calories per gram
+    const fat = Math.round((calories * fatRatio) / 9)         // 9 calories per gram
+    
+    return { protein, carbs, fat }
+  }
+
+  // Update macros when calories or goal changes
+  useEffect(() => {
+    const { protein, carbs, fat } = calculateMacros(formData.calorieTarget, formData.goal)
+    setFormData(prev => ({
+      ...prev,
+      proteinTarget: protein,
+      carbTarget: carbs,
+      fatTarget: fat
+    }))
+  }, [formData.calorieTarget, formData.goal])
 
   const handleLifestyleSelect = (lifestyle: string) => {
     setFormData(prev => ({ ...prev, lifestyle }))
@@ -73,8 +112,7 @@ export default function CreatePlanForm({ onPlanCreated }: CreatePlanFormProps) {
       const response = await apiClient.generateMealPlan(
         formData.lifestyle,
         formData.goal,
-        formData.dietaryRestrictions,
-        formData.days
+        formData.dietaryRestrictions
       )
       
       if (response.success) {
@@ -93,14 +131,14 @@ export default function CreatePlanForm({ onPlanCreated }: CreatePlanFormProps) {
       // Fallback to demo data if API fails
       const demoPlan = {
         id: `demo-${Date.now()}`,
-        name: `${demoLifestyles[formData.lifestyle]?.name} ${formData.goal} Plan`,
-        description: `Demo plan for ${formData.lifestyle}`,
+        name: `${formData.goal.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())} Plan`,
+        description: `Demo plan for ${formData.goal.replace('_', ' ')}`,
         lifestyle: formData.lifestyle,
         dailyMeals: [],
-        totalCalories: formData.calorieTarget * formData.days,
-        totalProtein: formData.proteinTarget * formData.days,
-        totalCarbs: formData.carbTarget * formData.days,
-        totalFat: formData.fatTarget * formData.days,
+        totalCalories: formData.calorieTarget * 7,
+        totalProtein: formData.proteinTarget * 7,
+        totalCarbs: formData.carbTarget * 7,
+        totalFat: formData.fatTarget * 7,
         created_at: new Date().toISOString()
       }
       
@@ -303,20 +341,6 @@ export default function CreatePlanForm({ onPlanCreated }: CreatePlanFormProps) {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Plan Duration (days)
-              </label>
-              <input
-                type="number"
-                value={formData.days}
-                onChange={(e) => setFormData(prev => ({ ...prev, days: parseInt(e.target.value) }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                min="1"
-                max="30"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
                 Protein (g/day)
               </label>
               <input
@@ -359,6 +383,13 @@ export default function CreatePlanForm({ onPlanCreated }: CreatePlanFormProps) {
                 step="5"
               />
             </div>
+          </div>
+
+          <div className="bg-blue-50 p-4 rounded-md">
+            <p className="text-sm text-blue-800">
+              <strong>Note:</strong> Protein, carbs, and fat are automatically calculated based on your calorie target and goal. 
+              You can adjust them manually if needed.
+            </p>
           </div>
 
           <div className="flex justify-between">

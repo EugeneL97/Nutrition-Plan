@@ -27,6 +27,11 @@ export default function PlansPage() {
     setLoading(false)
   }
 
+  const clearPlans = () => {
+    localStorage.removeItem('nutrition-plans')
+    setPlans([])
+  }
+
   if (!user) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -50,17 +55,23 @@ export default function PlansPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">My Nutrition Plans</h1>
-            <p className="mt-2 text-gray-600">
-              Manage and view your personalized nutrition plans
-            </p>
+            <h1 className="text-3xl font-bold text-gray-900">Your Nutrition Plans</h1>
+            <p className="mt-2 text-gray-600">View and manage your personalized meal plans</p>
           </div>
+          <div className="flex gap-4">
+            <button
+              onClick={clearPlans}
+              className="px-4 py-2 text-sm text-red-600 hover:text-red-700 border border-red-300 rounded-md hover:bg-red-50"
+            >
+              Clear All Plans
+            </button>
           <Link
             href="/plans/new"
             className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
           >
             Create New Plan
           </Link>
+          </div>
         </div>
 
         {loading ? (
@@ -69,7 +80,7 @@ export default function PlansPage() {
           </div>
         ) : plans.length === 0 ? (
           <div className="text-center py-12">
-            <div className="text-gray-500 mb-4">No nutrition plans yet</div>
+            <div className="text-gray-500 mb-4">No plans created yet</div>
             <Link
               href="/plans/new"
               className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
@@ -78,36 +89,21 @@ export default function PlansPage() {
             </Link>
           </div>
         ) : (
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {plans.map((plan) => (
-              <div key={plan.id} className="bg-white overflow-hidden shadow rounded-lg">
+              <div key={plan.id} className="bg-white rounded-lg shadow hover:shadow-md transition-shadow">
                 <div className="p-6">
-                  <div className="flex items-center">
-                    <div className="flex-shrink-0">
-                      <div className="w-10 h-10 bg-indigo-500 rounded-md flex items-center justify-center">
-                        <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                        </svg>
-                      </div>
-                    </div>
-                    <div className="ml-4 flex-1">
-                      <h3 className="text-lg font-medium text-gray-900">
-                        <Link href={`/plans/${plan.id}`} className="hover:text-indigo-600">
-                          {plan.name}
-                        </Link>
-                      </h3>
-                      <p className="text-sm text-gray-500">{plan.description}</p>
-                    </div>
-                  </div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">{plan.name}</h3>
+                  <p className="text-gray-600 text-sm mb-4">{plan.description}</p>
                   
                   <div className="mt-4 grid grid-cols-2 gap-4 text-sm">
                     <div>
-                      <span className="text-gray-500">Duration:</span>
-                      <span className="ml-1 font-medium">{plan.dailyMeals.length} days</span>
+                      <span className="text-gray-500">Calories:</span>
+                      <span className="ml-1 font-medium">{plan.totalCalories}/day</span>
                     </div>
                     <div>
-                      <span className="text-gray-500">Calories:</span>
-                      <span className="ml-1 font-medium">{Math.round(plan.totalCalories / plan.dailyMeals.length)}/day</span>
+                      <span className="text-gray-500">Protein:</span>
+                      <span className="ml-1 font-medium">{plan.totalProtein}g/day</span>
                     </div>
                   </div>
                   
