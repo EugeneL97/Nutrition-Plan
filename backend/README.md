@@ -23,9 +23,8 @@ PORT=5000
 ## API Endpoints
 
 - `GET /health` - Health check
-- `GET /api/nutrition/lifestyles` - Get available lifestyles
 - `POST /api/nutrition/generate-plan` - Generate meal plan
-- `GET /api/nutrition/demo-plan/:lifestyle` - Get demo plan
+- `GET /api/nutrition/demo-plan/:goals` - Get demo plan
 
 ## Development
 

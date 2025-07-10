@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { apiClient, demoLifestyles, type Lifestyle } from '@/lib/api'
+import { apiClient } from '@/lib/api'
 import { useRouter } from 'next/navigation'
 
 interface CreatePlanFormProps {
@@ -14,8 +14,7 @@ export default function CreatePlanForm({ onPlanCreated }: CreatePlanFormProps) {
   const [step, setStep] = useState(1)
   
   const [formData, setFormData] = useState({
-    lifestyle: 'average_joe',
-    goal: 'weight_loss',
+    goal: 'muscle_gain',
     dietaryRestrictions: [] as string[],
     calorieTarget: 2000,
     proteinTarget: 150,
@@ -30,11 +29,6 @@ export default function CreatePlanForm({ onPlanCreated }: CreatePlanFormProps) {
     { value: 'muscle_gain', label: 'Muscle Gain', icon: '💪' },
     { value: 'maintenance', label: 'Maintenance', icon: '🔄' }
   ]
-
-  const lifestyles = Object.entries(demoLifestyles).map(([key, lifestyle]) => ({
-    key,
-    ...lifestyle
-  }))
 
   const commonRestrictions = [
     'Vegetarian', 'Vegan', 'Gluten-Free', 'Dairy-Free', 
@@ -82,11 +76,6 @@ export default function CreatePlanForm({ onPlanCreated }: CreatePlanFormProps) {
     }))
   }, [formData.calorieTarget, formData.goal])
 
-  const handleLifestyleSelect = (lifestyle: string) => {
-    setFormData(prev => ({ ...prev, lifestyle }))
-    setStep(2)
-  }
-
   const addRestriction = () => {
     if (restrictionInput.trim() && !formData.dietaryRestrictions.includes(restrictionInput.trim())) {
       setFormData(prev => ({
@@ -110,7 +99,6 @@ export default function CreatePlanForm({ onPlanCreated }: CreatePlanFormProps) {
 
     try {
       const response = await apiClient.generateMealPlan(
-        formData.lifestyle,
         formData.goal,
         formData.dietaryRestrictions
       )
@@ -133,7 +121,6 @@ export default function CreatePlanForm({ onPlanCreated }: CreatePlanFormProps) {
         id: `demo-${Date.now()}`,
         name: `${formData.goal.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())} Plan`,
         description: `Demo plan for ${formData.goal.replace('_', ' ')}`,
-        lifestyle: formData.lifestyle,
         dailyMeals: [],
         totalCalories: formData.calorieTarget * 7,
         totalProtein: formData.proteinTarget * 7,
@@ -180,42 +167,11 @@ export default function CreatePlanForm({ onPlanCreated }: CreatePlanFormProps) {
           }`}>
             3
           </div>
-          <div className={`w-16 h-1 mx-2 ${step >= 4 ? 'bg-indigo-600' : 'bg-gray-200'}`}></div>
-          <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
-            step >= 4 ? 'bg-indigo-600 text-white' : 'bg-gray-200 text-gray-600'
-          }`}>
-            4
-          </div>
         </div>
       </div>
 
-      {/* Step 1: Lifestyle Selection */}
+      {/* Step 1: Goal Selection */}
       {step === 1 && (
-        <div className="space-y-6">
-          <h3 className="text-xl font-semibold text-gray-900">What's your lifestyle?</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {lifestyles.map((lifestyle) => (
-              <button
-                key={lifestyle.key}
-                onClick={() => handleLifestyleSelect(lifestyle.key)}
-                className="p-6 border-2 border-gray-200 rounded-lg hover:border-indigo-500 hover:bg-indigo-50 transition-colors text-left"
-              >
-                <div className="text-2xl mb-2">
-                  {lifestyle.key === 'bodybuilder' && '💪'}
-                  {lifestyle.key === 'casual_gym_goer' && '🏋'}
-                  {lifestyle.key === 'busy_professional' && '💼'}
-                  {lifestyle.key === 'average_joe' && '👤'}
-                </div>
-                <h4 className="font-semibold text-gray-900">{lifestyle.name}</h4>
-                <p className="text-sm text-gray-600 mt-1">{lifestyle.description}</p>
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Step 2: Goal Selection */}
-      {step === 2 && (
         <div className="space-y-6">
           <h3 className="text-xl font-semibold text-gray-900">What's your primary goal?</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -235,15 +191,9 @@ export default function CreatePlanForm({ onPlanCreated }: CreatePlanFormProps) {
             ))}
           </div>
           
-          <div className="flex justify-between">
+          <div className="flex justify-end">
             <button
-              onClick={() => setStep(1)}
-              className="px-4 py-2 text-gray-600 hover:text-gray-800"
-            >
-              ← Back
-            </button>
-            <button
-              onClick={() => setStep(3)}
+              onClick={() => setStep(2)}
               className="px-6 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
             >
               Next →
@@ -252,8 +202,8 @@ export default function CreatePlanForm({ onPlanCreated }: CreatePlanFormProps) {
         </div>
       )}
 
-      {/* Step 3: Dietary Restrictions */}
-      {step === 3 && (
+      {/* Step 2: Dietary Restrictions */}
+      {step === 2 && (
         <div className="space-y-6">
           <h3 className="text-xl font-semibold text-gray-900">Any dietary restrictions?</h3>
           
@@ -303,13 +253,13 @@ export default function CreatePlanForm({ onPlanCreated }: CreatePlanFormProps) {
 
           <div className="flex justify-between">
             <button
-              onClick={() => setStep(2)}
+              onClick={() => setStep(1)}
               className="px-4 py-2 text-gray-600 hover:text-gray-800"
             >
               ← Back
             </button>
             <button
-              onClick={() => setStep(4)}
+              onClick={() => setStep(3)}
               className="px-6 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
             >
               Next →
@@ -318,8 +268,8 @@ export default function CreatePlanForm({ onPlanCreated }: CreatePlanFormProps) {
         </div>
       )}
 
-      {/* Step 4: Nutrition Targets */}
-      {step === 4 && (
+      {/* Step 3: Nutrition Targets */}
+      {step === 3 && (
         <form onSubmit={handleSubmit} className="space-y-6">
           <h3 className="text-xl font-semibold text-gray-900">Set your nutrition targets</h3>
           
@@ -395,7 +345,7 @@ export default function CreatePlanForm({ onPlanCreated }: CreatePlanFormProps) {
           <div className="flex justify-between">
             <button
               type="button"
-              onClick={() => setStep(3)}
+              onClick={() => setStep(2)}
               className="px-4 py-2 text-gray-600 hover:text-gray-800"
             >
               ← Back

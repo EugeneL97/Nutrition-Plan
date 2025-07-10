@@ -1,239 +1,155 @@
 # Bodybuilding Nutrition Plan App - Roadmap
 
 ## Vision
-Build a robust, AI-assisted meal planning tool tailored for bodybuilders, with the flexibility to later adapt for the general population. The tool should provide precise, evidence-based macronutrient calculations, food preferences, and practical meal suggestions that support long-term adherence and progress.
+Build a practical, AI-assisted meal planning and tracking tool tailored for bodybuilders that focuses on sustainable adherence and fundamental optimization rather than perfection. The tool should provide personalized meal plans while tracking real-world adaptations, sleep quality, and digestion to help users make informed adjustments.
 
-## 1. Core Features (Bodybuilding Focus)
+## 1. Core Features (MVP)
 
-### Macronutrient Calculation
-- **Protein**: Default to 1g/lb bodyweight (user input for bodyweight)
-- **Fat**: Default to 0.3g/lb bodyweight (user input for bodyweight) 
-- **Carbs**: Remainder of calories after protein and fat are set
-- Allow user to override these defaults for advanced customization
-- Support for different bodyweight units (lbs/kg)
+### Daily Tracking System
+- **Morning logging**: Weight, sleep hours, wake time, previous day's digestion rating (1-5)
+- **Meal confirmation**: Ask users if they ate exactly as planned, made substitutions, or skipped meals
+- **Substitution tracking**: Automatic macro recalculation when users substitute foods
+- **Digestion tracking**: Daily overall rating (1-5) based on gas, stomach upset, sleep disruption
+- **Flexible meal timing**: Adapt to user's actual schedule with peri-workout priority
 
-### Meal Plan Generation
-- Use Gemini AI to generate daily meal plans that hit the calculated macros
-- Output both meal details and a summary of macros as JSON for easy verification
-- Ensure the sum of meal macros matches the targets as closely as possible
-- Generate shopping lists based on meal plans
+### AI Meal Plan Generation
+- Generate base meal plans based on user inputs (goals, preferences, restrictions)
+- Allow users to confirm or request changes before finalizing
+- Adjust plans based on weight trends and adherence patterns
+- Provide substitution suggestions from user's preferred foods database
 
-### Food Preferences & Restrictions
-- Allow users to specify preferred foods (e.g., potatoes for carbs, chicken for protein)
-- AI should prioritize these foods in meal generation
-- Suggest adjacent/related foods for variety (e.g., if user likes potatoes, suggest sweet potatoes, yams, etc.)
-- Food exclusions due to allergies, intolerances, or dislikes
-- **Low FODMAP defaults** to minimize digestive issues
-- **Food database integration**:
-  - Integrate with public food database APIs (USDA, Open Food Facts, Nutritionix)
-  - Allow users to add custom foods/recipes
-  - (Future) Build curated, verified food database for accuracy
+### Smart Schedule Integration
+- Input typical weekly schedule (work, gym, sleep times)
+- Auto-generate meal timing with peri-workout nutrition priority
+- Allow manual adjustments for schedule changes
+- Handle exceptions gracefully (working late = larger meals, traveling = mindful eating)
 
-### User Experience
-- Simple, clean UI focused on bodybuilding needs
-- Option to save, edit, and duplicate plans
-- Ability to adjust macros and regenerate plans
-- Mobile-responsive design for gym use
+### Optimal Score Dashboard
+- **Primary factors**: Sleep quantity/quality, digestion ratings, macro adherence
+- **Secondary factors**: Weight consistency within goal ranges, meal timing adherence
+- **Recommendations**: Prioritized by impact (sleep issues first, then digestion, then weight trends)
+- **Data visualization**: Daily scores, weekly trends, sleep patterns, digestion patterns
+
+### User Experience Levels
+- **Beginner**: More flexible tracking, larger acceptable ranges, educational content
+- **Intermediate**: Standard tracking with moderate precision requirements
+- **Advanced**: Rigid tracking for users who know their bodies well
 
 ## 2. Advanced Features (Future)
 
-### General Population Mode
-- Add "lifestyle" options for broader use cases (e.g., casual gym-goer, busy professional)
-- Adjust macro defaults and meal suggestions accordingly
-- Simplified interface for non-bodybuilders
+### Intelligent Pattern Recognition
+- **Digestion analysis**: Correlate poor ratings with specific foods over time
+- **Sleep pattern analysis**: Identify optimal sleep windows and hygiene factors
+- **Weight trend analysis**: Distinguish between water weight and actual fat loss/gain
+- **Adherence pattern recognition**: Identify common substitution patterns and preferences
 
-### Progress Tracking
-- Log daily meals and track adherence
-- Visualize progress toward goals (weight, macros, etc.)
-- Weekly weight change tracking for calorie adjustments
-- **Weekly refeed/cheat meal planning** triggered by:
-  - Losing too much weight on a cut
-  - Not gaining enough weight on a bulk
+### Smart Recommendations
+- **Sleep hygiene**: Personalized recommendations based on sleep patterns
+- **Food substitutions**: Suggest alternatives for foods causing digestive issues
+- **Calorie adjustments**: Automatic recommendations based on weight trends and goal adherence
+- **Meal timing optimization**: Adjust based on workout schedule and recovery patterns
 
-### Recipe Database
-- Build a database of common bodybuilding recipes
-- Allow users to add their own recipes
-- Recipe sharing and community features
+### Integration & Automation
+- **Google Calendar integration**: Auto-sync schedule for busy professionals
+- **Smart notifications**: Meal reminders, sleep tracking prompts, weekly check-ins
+- **Progress photos**: Optional tracking for visual progress assessment
+- **Coach/client dashboard**: Multi-user support for online coaches
 
-### Integration
-- Export plans to fitness tracking apps (e.g., MyFitnessPal)
-- Manual entry and CSV import for bodyweight/progress data
-- Integration with training logs for context (but not dynamic calorie adjustments)
-- **(Future) Import from fitness tracking apps** (MyFitnessPal, Fitbit, Apple Health, Google Fit)
-- **(Future) Smart scale integration** (Withings, Eufy, Renpho)
+### Contest Prep Features
+- **Progressive calorie reduction**: Automated adjustments over contest prep timeline
+- **Peak week protocols**: Specialized meal timing and water manipulation
+- **Carb cycling**: High/low day meal plans based on training schedule
+- **Strict adherence mode**: Reduced flexibility for contest prep phase
 
-## 3. Bodybuilding-Specific Features
-
-### Meal Timing
-- Option to emphasize peri-workout nutrition (pre/post-workout meals)
-- Meal timing suggestions based on training schedule
-- **Schedule-based recommendations**:
-  - Consistent schedules: Standard meal timing and prep suggestions
-  - Inconsistent schedules: Portable, shelf-stable, or reheatable meal recommendations
-  - Onboarding questionnaire for work/life/training schedule
-
-### Supplement Suggestions
-- Recommend common supplements (e.g., whey, creatine) based on user goals
-- Supplement timing recommendations
-- **Micronutrient-driven recommendations**: Suggest supplements or food sources if diet is low in specific micronutrients
-- Basic, evidence-based supplement suggestions (protein powder, creatine, fish oil, multivitamin, vitamin D)
-
-### Contest Prep Mode
-- Stricter macro control, more frequent meals, low-calorie options
-- Contest prep timeline planning
-- Peak week protocols
-
-### Bulk vs. Cut Phases
-- Adjust macro ratios and meal suggestions based on bulking or cutting phase
-- **Protein recommendations by phase**:
-  - Cutting: 1.2–1.5g/lb bodyweight protein
-  - Maintenance/Bulking: 1.0g/lb bodyweight protein
-- **High volume, low calorie food emphasis during cuts** (more veggies/fruit instead of rice)
-- **Long-term roadmaps** for bulking/cutting/minicut/contest prep phases
-- Suggested rate of loss or weight gain in long-term context
-
-### Dieting Styles Support
-- **Carb cycling** (high carbs on training days, or just on leg days, low carbs on rest days)
-- **Non-carb cycling** (day to day doesn't change)
-- **Intermittent fasting** protocols
-- **Protein sparing fasts**
-- **Standard day-to-day meal plans** that don't change
-
-## 4. Health & Wellness Features
-
-### Hydration & Electrolytes
-- **Hydration reminders** based on activity level
-- **Sodium recommendations** especially if sweating
-- **Weather-based hydration suggestions** (eventually through geotagging, check weather and recommend more hydration if hot + humid)
-- Electrolyte balance recommendations
-
-### Meal Prep & Sustainability
-- **Meal prep tips** to make dieting more sustainable and easier to adhere to
-- **Scheduled meal prep reminders** (user-defined intervals: every 3 days, weekly, etc.)
-- **Freezer vs. fridge prep recommendations**:
-  - Freezer prep for large batches (e.g., 30lbs of protein, portioned and frozen)
-  - Fridge prep for short-term consumption
-  - Food safety and storage education
-- Batch cooking suggestions
-- Meal prep timeline planning
-- Storage and reheating tips
-
-### Digestion Support
-- **Digestion helper** to figure out what users can tolerate and tailor suggestions
-- Track food intolerances and reactions
-- Suggest gut-friendly alternatives
-- **Low FODMAP defaults** to minimize digestive issues
-
-### Micronutrient Tracking
-- **Comprehensive micronutrient tracking** (think Cronometer)
-- Identify potential deficiencies
-- Suggest foods to address micronutrient gaps
-- Vitamin and mineral recommendations based on diet analysis
-
-## 5. Technical Improvements
+## 3. Technical Implementation
 
 ### AI Prompt Engineering
-- Refine prompts to Gemini to ensure accurate macro matching and food preferences
-- Parse and validate AI output, correcting discrepancies as needed
-- Require AI to output meal plan and macro summary as JSON
-- Implement macro verification after AI response
+- Generate meal plans with clear macro targets
+- Provide substitution suggestions with macro equivalents
+- Adapt plans based on user feedback and adherence patterns
+- Parse and validate AI output for accuracy
 
-### Testing & Validation
-- Add unit and integration tests for macro calculations and meal plan generation
-- Validate that meal plans meet user-specified macros
-- Test AI output parsing and error handling
+### Data Architecture
+- **User preferences database**: Track preferred foods, substitutions, restrictions
+- **Digestion correlation engine**: Identify problematic foods over time
+- **Sleep pattern analysis**: Track consistency and quality metrics
+- **Weight trend analysis**: Distinguish between water weight and actual changes
 
-### Performance & Scalability
-- Optimize AI response times
-- Cache common meal suggestions
-- Implement progressive web app features
+### Mobile-First Design
+- **Quick logging**: Easy morning weight and sleep entry
+- **Meal confirmation**: Simple yes/substitution/skip options
+- **Dashboard overview**: Clear optimal score and priority recommendations
+- **Offline capability**: Basic tracking without internet connection
 
-## 6. User Customization
+## 4. User Experience Flow
 
-### Macro Ratio Flexibility
-- Allow users to shift ratios (e.g., higher protein, lower carbs) based on personal preference or tolerance
-- Support for different dieting approaches (keto, high-carb, etc.)
+### Morning Routine
+1. Log weight, sleep hours, wake time
+2. Rate previous day's digestion (1-5)
+3. Review today's meal plan and timing
+4. Check optimal score and recommendations
 
-### Personalization
-- Learning algorithms to improve suggestions based on user preferences
-- Custom food database for individual users
-- Personalized supplement recommendations
-- **Coach/Client Dashboard**:
-  - Support for both individual and coach (multi-client) modes
-  - Coach dashboard for managing multiple clients, assigning plans, and tracking progress
-  - Individual mode for self-coached users
+### Throughout Day
+1. Receive meal reminders based on schedule
+2. Confirm meal consumption (exact/substitution/skip)
+3. Log any spontaneous snacks or off-plan meals
+4. Track substitutions with automatic macro recalculation
 
-## 7. Data & Analytics
+### Evening Review
+1. Rate overall digestion for the day
+2. Log any schedule changes for tomorrow
+3. Review adherence and make adjustments if needed
 
-### Progress Analytics
-- Weight tracking over time
-- Macro adherence tracking
-- Progress photos (optional)
-- Body composition tracking
+### Weekly Assessment
+1. Review weight trends and goal progress
+2. Analyze sleep and digestion patterns
+3. Adjust meal plan based on AI recommendations
+4. Set priorities for the following week
 
-### Insights & Recommendations
-- AI-powered insights based on progress data
-- Automatic calorie adjustments based on weekly weight changes
-- Plateau detection and suggestions
+## 5. Success Metrics
 
-## 8. Community & Social Features
+### User Engagement
+- Daily logging consistency
+- Meal plan adherence rates
+- Sleep tracking participation
+- Digestion rating completion
 
-### Community Features
-- Recipe sharing
-- Progress sharing (optional)
-- Community challenges
-- Expert advice and Q&A
+### Health Outcomes
+- Weight goal achievement rates
+- Sleep quality improvements
+- Digestive health improvements
+- Overall adherence to nutrition plans
 
-### Educational Content
-- Nutrition education articles
-- Training and nutrition guides
-- Supplement education
-- Contest prep guides
+### User Satisfaction
+- Optimal score improvements over time
+- User retention rates
+- Feature adoption rates
+- User feedback and ratings
 
 ## Implementation Phases
 
-### Phase 1: Core Foundation (Current)
+### Phase 1: Core MVP (Current)
 - [x] Basic meal plan generation
 - [x] User authentication
-- [ ] Proper macro calculations (1g/lb protein, 0.3g/lb fat)
-- [ ] Food preferences system
-- [ ] AI JSON output parsing
-- [ ] Food database integration (public API)
-- [ ] Schedule-based meal timing recommendations
-- [ ] Coach/Client dashboard architecture
+- [ ] Daily tracking system (weight, sleep, digestion)
+- [ ] Meal confirmation and substitution tracking
+- [ ] Basic optimal score calculation
+- [ ] Simple dashboard with recommendations
 
-### Phase 2: Bodybuilding Features
-- [ ] Bulk/cut phase support with protein recommendations (1.2-1.5g/lb for cutting)
-- [ ] Meal timing optimization
-- [ ] Supplement recommendations (basic + micronutrient-driven)
-- [ ] Progress tracking
-- [ ] Hydration reminders
-- [ ] Meal prep scheduling and storage recommendations
+### Phase 2: Enhanced Tracking
+- [ ] Schedule integration and meal timing
+- [ ] Advanced substitution database
+- [ ] Pattern recognition for digestion issues
+- [ ] Sleep pattern analysis
+- [ ] Weight trend analysis
 
-### Phase 3: Advanced Features
-- [ ] Contest prep mode
-- [ ] Carb cycling support
-- [ ] Micronutrient tracking
-- [ ] Weather-based hydration
-- [ ] Digestion support
+### Phase 3: Intelligence & Automation
+- [ ] AI-powered recommendations
+- [ ] Smart calorie adjustments
+- [ ] Contest prep features
+- [ ] Coach/client dashboard
+- [ ] Google Calendar integration
 
-### Phase 4: Optimization & Scale
-- [ ] Performance optimization
-- [ ] Community features
-- [ ] Educational content
-- [ ] Advanced analytics
-- [ ] Mobile app development
+## Design Philosophy
 
-## Success Metrics
-- User adherence to meal plans
-- Progress toward body composition goals
-- User retention and engagement
-- Accuracy of AI-generated meal plans
-- User satisfaction with macro calculations
-
-## Future Considerations
-- Integration with wearable devices
-- AI-powered progress photo analysis
-- Virtual coaching and consultation
-- Integration with supplement retailers
-- Advanced meal prep automation
+The app emphasizes **sustainable adherence over perfection**, recognizing that bodybuilders need practical solutions that work in real-world scenarios. The focus is on fundamental optimization (sleep, digestion, basic adherence) rather than micromanagement, with intelligent systems that learn from user patterns to provide increasingly personalized recommendations.

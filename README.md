@@ -2,30 +2,30 @@
 
 ## What is this?
 
-The Nutrition Plan is an innovative web application that automates meal planning based on individual lifestyles and preferences. As a fitness enthusiast and bodybuilder, I recognized the need for personalized nutrition plans that go beyond the typical "chicken, broccoli, and rice" meals. A tailored diet is crucial for adherence and ultimately, weight loss and fitness success.
+The Nutrition Plan is an innovative web application that automates meal planning based on individual goals and preferences. As a fitness enthusiast and bodybuilder, I recognized the need for personalized nutrition plans that go beyond the typical "chicken, broccoli, and rice" meals. A tailored diet is crucial for adherence and ultimately, weight loss and fitness success.
 
 ## Why does this exist?
 
-My goal with this project is to challenge myself as a solo developer and further develop my skills in software engineering, while applying my knowledge in nutrition and kinesiology. The Nutrition Plan offers a wide range of diet plans, catering to individuals seeking general health to athletes looking to optimize their performance in their respective sports.
+My goal with this project is to challenge myself as a solo developer and further develop my skills in software engineering, while applying my knowledge in nutrition and kinesiology. The Nutrition Plan offers personalized diet plans, catering to individuals seeking general health to athletes looking to optimize their performance in their respective sports.
 
-The key insight is that **different lifestyles have completely different nutrition needs**:
+The key insight is that **bodybuilders have specific nutrition needs**:
 
-- **Bodybuilders** need high protein, strict timing, and supplement integration
-- **Casual gym goers** want balanced nutrition with moderate protein and flexible timing
-- **Busy professionals** need quick meals, workplace options, and time-efficient prep
-- **Average people** want simple, sustainable approaches focused on weight management
+- **High protein requirements** (1.2-1.5g per lb bodyweight)
+- **Strict meal timing** for optimal muscle growth
+- **Detailed macro tracking** for contest preparation
+- **Supplement integration** for enhanced results
+- **Contest prep cycles** with specific nutritional phases
 
-Traditional nutrition apps treat everyone the same. This app recognizes that a bodybuilder preparing for a contest has vastly different needs than a busy professional trying to eat healthy at work.
+Traditional nutrition apps treat everyone the same. This app recognizes that a bodybuilder preparing for a contest has vastly different needs than someone just trying to eat healthy.
 
 ## How it works
 
 The app uses AI-powered meal generation to create personalized nutrition plans based on:
-- **Lifestyle type** (bodybuilder, casual gym goer, busy professional, average joe)
 - **Fitness goals** (weight loss, muscle gain, maintenance, energy boost)
 - **Dietary restrictions** (vegetarian, gluten-free, etc.)
 - **Nutrition targets** (calories, protein, carbs, fat)
 
-Each lifestyle has specific meal patterns, timing considerations, and nutritional priorities that make the generated plans realistic and useful.
+The system is optimized for bodybuilder nutrition patterns, with specific meal timing, high protein requirements, and supplement integration that make the generated plans realistic and useful.
 
 ## Project Structure
 
@@ -91,7 +91,7 @@ PORT=5000
 
 ## Features
 
-- **Lifestyle-based nutrition planning**
+- **Bodybuilder-optimized nutrition planning**
 - **AI-powered meal generation**
 - **Multi-step plan creation**
 - **Detailed meal breakdowns**
@@ -101,18 +101,15 @@ PORT=5000
 
 ## API Endpoints
 
-### GET /api/nutrition/lifestyles
-Get available lifestyle types and their characteristics.
-
 ### POST /api/nutrition/generate-plan
-Generate a personalized meal plan based on lifestyle and goals.
+Generate a personalized meal plan based on goals and dietary restrictions.
 
-### GET /api/nutrition/demo-plan/:lifestyle
-Get a demo meal plan for a specific lifestyle.
+### GET /api/nutrition/demo-plan/:goals
+Get a demo meal plan for specific fitness goals.
 
 ## Design Philosophy
 
-The app emphasizes **lifestyle-first** nutrition planning, recognizing that different users have vastly different needs, constraints, and goals. This approach ensures that meal plans are not just nutritionally sound, but also practical and sustainable for each user's specific situation.
+The app emphasizes **bodybuilder-first** nutrition planning, recognizing that serious fitness enthusiasts have specific needs, constraints, and goals. This approach ensures that meal plans are not just nutritionally sound, but also practical and sustainable for dedicated athletes.
 
 ## Deployment
 

@@ -4,21 +4,21 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || 'demo-key');
 
 // Bodybuilder nutrition configuration (default for MVP)
 const BODYBUILDER_CONFIG = {
-  name: 'Bodybuilder',
-  description: 'Focused on muscle building and contest preparation',
-  characteristics: [
-    'High protein requirements (1.2-1.5g per lb bodyweight)',
-    'Strict meal timing',
-    'Detailed macro tracking',
-    'Supplement integration',
-    'Contest prep cycles'
-  ],
-  nutritionFocus: {
-    protein: 'high',
-    carbs: 'moderate',
-    fat: 'moderate',
-    mealFrequency: '6-8 meals per day',
-    timing: 'critical'
+    name: 'Bodybuilder',
+    description: 'Focused on muscle building and contest preparation',
+    characteristics: [
+      'High protein requirements (1.2-1.5g per lb bodyweight)',
+      'Strict meal timing',
+      'Detailed macro tracking',
+      'Supplement integration',
+      'Contest prep cycles'
+    ],
+    nutritionFocus: {
+      protein: 'high',
+      carbs: 'moderate',
+      fat: 'moderate',
+      mealFrequency: '6-8 meals per day',
+      timing: 'critical'
   }
 };
 
@@ -46,7 +46,7 @@ class NutritionAI {
   buildPrompt(goals, restrictions) {
     return `Create a single day nutrition plan for a bodybuilder.
 
-Lifestyle Characteristics:
+Bodybuilder Characteristics:
 ${BODYBUILDER_CONFIG.characteristics.map(char => `- ${char}`).join('\n')}
 
 Nutrition Focus:
@@ -97,9 +97,9 @@ Format as a structured meal plan for a single day.`;
 
   generateBodybuilderMeals(dayNumber) {
     return [
-      this.createMeal('Pre-Workout Shake', 300, 25, 30, 8, ['Protein powder', 'Banana', 'Oats', 'Almond milk'], ['Blend all ingredients', 'Drink 30 minutes before workout'], 5, 0),
-      this.createMeal('Post-Workout Meal', 450, 35, 45, 12, ['Chicken breast', 'Sweet potato', 'Broccoli', 'Olive oil'], ['Grill chicken', 'Bake sweet potato', 'Steam broccoli'], 15, 25),
-      this.createMeal('Protein-Rich Dinner', 400, 40, 25, 15, ['Salmon', 'Quinoa', 'Asparagus', 'Lemon'], ['Bake salmon', 'Cook quinoa', 'Roast asparagus'], 20, 30)
+          this.createMeal('Pre-Workout Shake', 300, 25, 30, 8, ['Protein powder', 'Banana', 'Oats', 'Almond milk'], ['Blend all ingredients', 'Drink 30 minutes before workout'], 5, 0),
+          this.createMeal('Post-Workout Meal', 450, 35, 45, 12, ['Chicken breast', 'Sweet potato', 'Broccoli', 'Olive oil'], ['Grill chicken', 'Bake sweet potato', 'Steam broccoli'], 15, 25),
+          this.createMeal('Protein-Rich Dinner', 400, 40, 25, 15, ['Salmon', 'Quinoa', 'Asparagus', 'Lemon'], ['Bake salmon', 'Cook quinoa', 'Roast asparagus'], 20, 30)
     ];
   }
 
