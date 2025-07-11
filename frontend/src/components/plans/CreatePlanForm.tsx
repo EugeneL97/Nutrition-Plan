@@ -25,9 +25,9 @@ export default function CreatePlanForm({ onPlanCreated }: CreatePlanFormProps) {
   const [restrictionInput, setRestrictionInput] = useState('')
 
   const goals = [
-    { value: 'weight_loss', label: 'Weight Loss', icon: '⚖' },
-    { value: 'muscle_gain', label: 'Muscle Gain', icon: '💪' },
-    { value: 'maintenance', label: 'Maintenance', icon: '🔄' }
+    { value: 'weight_loss', label: 'Weight Loss'},
+    { value: 'muscle_gain', label: 'Muscle Gain'},
+    { value: 'maintenance', label: 'Maintenance'}
   ]
 
   const commonRestrictions = [
@@ -185,7 +185,6 @@ export default function CreatePlanForm({ onPlanCreated }: CreatePlanFormProps) {
                     : 'border-gray-200 hover:border-indigo-500 hover:bg-indigo-50'
                 }`}
               >
-                <div className="text-3xl mb-2">{goal.icon}</div>
                 <h4 className="font-semibold text-gray-900">{goal.label}</h4>
               </button>
             ))}
