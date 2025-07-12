@@ -14,12 +14,14 @@ export default function CreatePlanForm({ onPlanCreated }: CreatePlanFormProps) {
   const [step, setStep] = useState(1)
   
   const [formData, setFormData] = useState({
+    weight: '',
     goal: 'muscle_gain',
     dietaryRestrictions: [] as string[],
-    calorieTarget: 2000,
-    proteinTarget: 150,
-    carbTarget: 200,
-    fatTarget: 65
+    calorieTarget: 0,
+    proteinTarget: 0,
+    carbTarget: 0,
+    fatTarget: 0,
+    rateOfChange: 0.375 // Default to middle of muscle gain range
   })
 
   const [restrictionInput, setRestrictionInput] = useState('')
@@ -35,46 +37,78 @@ export default function CreatePlanForm({ onPlanCreated }: CreatePlanFormProps) {
     'Nut-Free', 'Low-Carb', 'Keto', 'Paleo'
   ]
 
-  // Calculate macros based on calories and goal
-  const calculateMacros = (calories: number, goal: string) => {
-    let proteinRatio, carbRatio, fatRatio
+  // Calculate calories and macros based on bodyweight, goal, and rate of change
+  const calculateNutritionTargets = (weight: number, goal: string, rateOfChange: number) => {
+    let baseCaloriesPerLb, proteinPerLb, fatPerLb, calorieAdjustment
     
     switch (goal) {
       case 'muscle_gain':
-        proteinRatio = 0.3 // 30% protein
-        carbRatio = 0.45   // 45% carbs
-        fatRatio = 0.25    // 25% fat
+        baseCaloriesPerLb = 15 // Base maintenance calories
+        proteinPerLb = 1.2 // 1.2g protein per lb
+        fatPerLb = 0.4 // 0.4g fat per lb
+        // Adjust calories based on rate of change (0.25% - 0.5% BW/week)
+        // 0.25% BW = 0.5lb/week = 1750 calories/week = 250 calories/day
+        // 0.5% BW = 1lb/week = 3500 calories/week = 500 calories/day
+        // For any weight: rate × weight × 2.5 = daily calorie adjustment
+        calorieAdjustment = rateOfChange * weight * 5
         break
       case 'weight_loss':
-        proteinRatio = 0.35 // 35% protein
-        carbRatio = 0.35   // 35% carbs
-        fatRatio = 0.30    // 30% fat
+        baseCaloriesPerLb = 15 // Base maintenance calories
+        proteinPerLb = 1.5 // 1.5g protein per lb (higher for muscle preservation)
+        fatPerLb = 0.3 // 0.3g fat per lb (minimum for hormone production)
+        // Adjust calories based on rate of change (0.5% - 1.0% BW/week)
+        // 0.5% BW = 1lb/week = 3500 calories/week = 500 calories/day deficit
+        // 1.0% BW = 2lb/week = 7000 calories/week = 1000 calories/day deficit
+        // For any weight: rate × weight × 2.5 = daily calorie adjustment
+        calorieAdjustment = rateOfChange * weight * -5
         break
       case 'maintenance':
       default:
-        proteinRatio = 0.25 // 25% protein
-        carbRatio = 0.50   // 50% carbs
-        fatRatio = 0.25    // 25% fat
+        baseCaloriesPerLb = 15 // 15 calories per lb for maintenance
+        proteinPerLb = 1.0 // 1.0g protein per lb
+        fatPerLb = 0.35 // 0.35g fat per lb
+        calorieAdjustment = 0 // No adjustment for maintenance
         break
     }
     
-    const protein = Math.round((calories * proteinRatio) / 4) // 4 calories per gram
-    const carbs = Math.round((calories * carbRatio) / 4)      // 4 calories per gram
-    const fat = Math.round((calories * fatRatio) / 9)         // 9 calories per gram
+    const totalCalories = Math.round(weight * baseCaloriesPerLb + calorieAdjustment)
+    const protein = Math.round(weight * proteinPerLb)
+    const fat = Math.round(weight * fatPerLb)
+    const carbs = Math.round((totalCalories - (protein * 4) - (fat * 9)) / 4) // Remaining calories as carbs
     
-    return { protein, carbs, fat }
+    return { 
+      calories: totalCalories, 
+      protein, 
+      carbs, 
+      fat 
+    }
   }
 
-  // Update macros when calories or goal changes
+  // Update nutrition targets when weight, goal, or rate of change changes
   useEffect(() => {
-    const { protein, carbs, fat } = calculateMacros(formData.calorieTarget, formData.goal)
-    setFormData(prev => ({
-      ...prev,
-      proteinTarget: protein,
-      carbTarget: carbs,
-      fatTarget: fat
-    }))
-  }, [formData.calorieTarget, formData.goal])
+    if (formData.weight) {
+      const weight = parseFloat(formData.weight)
+      const { calories, protein, carbs, fat } = calculateNutritionTargets(weight, formData.goal, formData.rateOfChange)
+      setFormData(prev => ({
+        ...prev,
+        calorieTarget: calories,
+        proteinTarget: protein,
+        carbTarget: carbs,
+        fatTarget: fat
+      }))
+    }
+  }, [formData.weight, formData.goal, formData.rateOfChange])
+
+  // Reset rate of change when goal changes
+  useEffect(() => {
+    if (formData.goal === 'muscle_gain') {
+      setFormData(prev => ({ ...prev, rateOfChange: 0.375 })) // Middle of 0.25-0.5 range
+    } else if (formData.goal === 'weight_loss') {
+      setFormData(prev => ({ ...prev, rateOfChange: 0.75 })) // Middle of 0.5-1.0 range
+    } else {
+      setFormData(prev => ({ ...prev, rateOfChange: 0 })) // No change for maintenance
+    }
+  }, [formData.goal])
 
   const addRestriction = () => {
     if (restrictionInput.trim() && !formData.dietaryRestrictions.includes(restrictionInput.trim())) {
@@ -140,6 +174,28 @@ export default function CreatePlanForm({ onPlanCreated }: CreatePlanFormProps) {
     }
   }
 
+  const getRateOfChangeLabel = () => {
+    if (formData.goal === 'muscle_gain') {
+      return `${(formData.rateOfChange).toFixed(2)}% bodyweight per week`
+    } else if (formData.goal === 'weight_loss') {
+      return `${(formData.rateOfChange).toFixed(2)}% bodyweight per week`
+    }
+    return 'Maintenance'
+  }
+
+  const getRateOfChangeDescription = () => {
+    if (formData.goal === 'muscle_gain') {
+      if (formData.rateOfChange <= 0.3) return 'Conservative (less fat gain)'
+      if (formData.rateOfChange <= 0.4) return 'Moderate (balanced)'
+      return 'Aggressive (more fat gain)'
+    } else if (formData.goal === 'weight_loss') {
+      if (formData.rateOfChange <= 0.6) return 'Conservative (preserve muscle)'
+      if (formData.rateOfChange <= 0.8) return 'Moderate (balanced)'
+      return 'Aggressive (faster fat loss)'
+    }
+    return 'Maintain current weight'
+  }
+
   return (
     <div className="max-w-2xl mx-auto p-6">
       <div className="mb-8">
@@ -167,11 +223,56 @@ export default function CreatePlanForm({ onPlanCreated }: CreatePlanFormProps) {
           }`}>
             3
           </div>
+          <div className={`w-16 h-1 mx-2 ${step >= 4 ? 'bg-indigo-600' : 'bg-gray-200'}`}></div>
+          <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
+            step >= 4 ? 'bg-indigo-600 text-white' : 'bg-gray-200 text-gray-600'
+          }`}>
+            4
+          </div>
         </div>
       </div>
 
-      {/* Step 1: Goal Selection */}
+      {/* Step 1: Weight Input */}
       {step === 1 && (
+        <div className="space-y-6">
+          <h3 className="text-xl font-semibold text-gray-900">What's your current weight?</h3>
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Weight (lbs)
+              </label>
+              <input
+                type="number"
+                step="0.1"
+                value={formData.weight}
+                onChange={(e) => setFormData(prev => ({ ...prev, weight: e.target.value }))}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                placeholder="180.5"
+                required
+              />
+            </div>
+            
+            <div className="bg-blue-50 p-4 rounded-md">
+              <p className="text-sm text-blue-800">
+                <strong>Note:</strong> Your nutrition targets will be calculated based on your bodyweight and goal.
+              </p>
+            </div>
+          </div>
+          
+          <div className="flex justify-end">
+            <button
+              onClick={() => setStep(2)}
+              disabled={!formData.weight}
+              className="px-6 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Next →
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Step 2: Goal Selection */}
+      {step === 2 && (
         <div className="space-y-6">
           <h3 className="text-xl font-semibold text-gray-900">What's your primary goal?</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -190,9 +291,15 @@ export default function CreatePlanForm({ onPlanCreated }: CreatePlanFormProps) {
             ))}
           </div>
           
-          <div className="flex justify-end">
+          <div className="flex justify-between">
             <button
-              onClick={() => setStep(2)}
+              onClick={() => setStep(1)}
+              className="px-4 py-2 text-gray-600 hover:text-gray-800"
+            >
+              ← Back
+            </button>
+            <button
+              onClick={() => setStep(3)}
               className="px-6 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
             >
               Next →
@@ -201,8 +308,8 @@ export default function CreatePlanForm({ onPlanCreated }: CreatePlanFormProps) {
         </div>
       )}
 
-      {/* Step 2: Dietary Restrictions */}
-      {step === 2 && (
+      {/* Step 3: Dietary Restrictions */}
+      {step === 3 && (
         <div className="space-y-6">
           <h3 className="text-xl font-semibold text-gray-900">Any dietary restrictions?</h3>
           
@@ -252,13 +359,13 @@ export default function CreatePlanForm({ onPlanCreated }: CreatePlanFormProps) {
 
           <div className="flex justify-between">
             <button
-              onClick={() => setStep(1)}
+              onClick={() => setStep(2)}
               className="px-4 py-2 text-gray-600 hover:text-gray-800"
             >
               ← Back
             </button>
             <button
-              onClick={() => setStep(3)}
+              onClick={() => setStep(4)}
               className="px-6 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
             >
               Next →
@@ -267,10 +374,50 @@ export default function CreatePlanForm({ onPlanCreated }: CreatePlanFormProps) {
         </div>
       )}
 
-      {/* Step 3: Nutrition Targets */}
-      {step === 3 && (
+      {/* Step 4: Nutrition Targets */}
+      {step === 4 && (
         <form onSubmit={handleSubmit} className="space-y-6">
-          <h3 className="text-xl font-semibold text-gray-900">Set your nutrition targets</h3>
+          <h3 className="text-xl font-semibold text-gray-900">Your calculated nutrition targets</h3>
+          
+          <div className="bg-green-50 p-4 rounded-md mb-6">
+            <p className="text-sm text-green-800">
+              <strong>Calculated for {formData.weight}lbs:</strong> These targets are based on your bodyweight and {formData.goal.replace('_', ' ')} goal.
+            </p>
+          </div>
+
+          {/* Rate of Change Slider */}
+          {(formData.goal === 'muscle_gain' || formData.goal === 'weight_loss') && (
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Rate of Change
+                </label>
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm text-gray-600">
+                    {formData.goal === 'muscle_gain' ? '0.25%' : '0.5%'}
+                  </span>
+                  <span className="text-sm font-medium text-gray-900">
+                    {getRateOfChangeLabel()}
+                  </span>
+                  <span className="text-sm text-gray-600">
+                    {formData.goal === 'muscle_gain' ? '0.5%' : '1.0%'}
+                  </span>
+                </div>
+                <input
+                  type="range"
+                  min={formData.goal === 'muscle_gain' ? 0.25 : 0.5}
+                  max={formData.goal === 'muscle_gain' ? 0.5 : 1.0}
+                  step={0.025}
+                  value={formData.rateOfChange}
+                  onChange={(e) => setFormData(prev => ({ ...prev, rateOfChange: parseFloat(e.target.value) }))}
+                  className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
+                />
+                <p className="text-sm text-gray-600 mt-1">
+                  {getRateOfChangeDescription()}
+                </p>
+              </div>
+            </div>
+          )}
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
@@ -282,8 +429,8 @@ export default function CreatePlanForm({ onPlanCreated }: CreatePlanFormProps) {
                 value={formData.calorieTarget}
                 onChange={(e) => setFormData(prev => ({ ...prev, calorieTarget: parseInt(e.target.value) }))}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                min="1200"
-                max="4000"
+                min="1000"
+                max="10000"
                 step="50"
               />
             </div>
@@ -298,7 +445,7 @@ export default function CreatePlanForm({ onPlanCreated }: CreatePlanFormProps) {
                 onChange={(e) => setFormData(prev => ({ ...prev, proteinTarget: parseInt(e.target.value) }))}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 min="50"
-                max="300"
+                max="1000"
                 step="5"
               />
             </div>
@@ -313,7 +460,7 @@ export default function CreatePlanForm({ onPlanCreated }: CreatePlanFormProps) {
                 onChange={(e) => setFormData(prev => ({ ...prev, carbTarget: parseInt(e.target.value) }))}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 min="50"
-                max="500"
+                max="1500"
                 step="10"
               />
             </div>
@@ -328,7 +475,7 @@ export default function CreatePlanForm({ onPlanCreated }: CreatePlanFormProps) {
                 onChange={(e) => setFormData(prev => ({ ...prev, fatTarget: parseInt(e.target.value) }))}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 min="30"
-                max="150"
+                max="500"
                 step="5"
               />
             </div>
@@ -336,15 +483,14 @@ export default function CreatePlanForm({ onPlanCreated }: CreatePlanFormProps) {
 
           <div className="bg-blue-50 p-4 rounded-md">
             <p className="text-sm text-blue-800">
-              <strong>Note:</strong> Protein, carbs, and fat are automatically calculated based on your calorie target and goal. 
-              You can adjust them manually if needed.
+              <strong>Note:</strong> The calories and macros provided are a baseline for your weight. Depending on your weekly trends, they will be adjusted accordingly for you.
             </p>
           </div>
 
           <div className="flex justify-between">
             <button
               type="button"
-              onClick={() => setStep(2)}
+              onClick={() => setStep(3)}
               className="px-4 py-2 text-gray-600 hover:text-gray-800"
             >
               ← Back
