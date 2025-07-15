@@ -131,10 +131,10 @@ Build a practical, AI-assisted meal planning and tracking tool tailored for body
 ### Phase 1: Core MVP (Current)
 - [x] Basic meal plan generation
 - [x] User authentication
-- [ ] Daily tracking system (weight, sleep, digestion)
+- [x] Daily tracking system (weight, sleep, digestion)
 - [ ] Meal confirmation and substitution tracking
-- [ ] Basic optimal score calculation
-- [ ] Simple dashboard with recommendations
+- [x] Basic optimal score calculation
+- [x] Simple dashboard with recommendations
 
 ### Phase 2: Enhanced Tracking
 - [ ] Schedule integration and meal timing
