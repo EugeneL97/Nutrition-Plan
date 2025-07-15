@@ -431,7 +431,7 @@ export default function CreatePlanForm({ onPlanCreated }: CreatePlanFormProps) {
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 min="1000"
                 max="10000"
-                step="50"
+                step="25"
               />
             </div>
 
@@ -446,7 +446,7 @@ export default function CreatePlanForm({ onPlanCreated }: CreatePlanFormProps) {
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 min="50"
                 max="1000"
-                step="5"
+                step="1"
               />
             </div>
 
@@ -461,7 +461,7 @@ export default function CreatePlanForm({ onPlanCreated }: CreatePlanFormProps) {
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 min="50"
                 max="1500"
-                step="10"
+                step="1"
               />
             </div>
 
@@ -476,7 +476,7 @@ export default function CreatePlanForm({ onPlanCreated }: CreatePlanFormProps) {
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 min="30"
                 max="500"
-                step="5"
+                step="1"
               />
             </div>
           </div>
